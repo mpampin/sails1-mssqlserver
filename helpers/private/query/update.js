@@ -99,13 +99,22 @@ module.exports = function insertRecord(options, cb) {
       return cb(err);
     }
 
+    // MS SQL does not allow updating identity column
+    var updateWithoutPK = Object.assign({}, options.statement.update);
+    delete updateWithoutPK[options.primaryKey]
+    var updateStatement = {
+      update: updateWithoutPK,
+      from: options.statement.using,
+      where: options.statement.where
+    }
+
     //  ╔═╗╔═╗╔╦╗╔═╗╦╦  ╔═╗  ┌─┐ ┬ ┬┌─┐┬─┐┬ ┬
     //  ║  ║ ║║║║╠═╝║║  ║╣   │─┼┐│ │├┤ ├┬┘└┬┘
     //  ╚═╝╚═╝╩ ╩╩  ╩╩═╝╚═╝  └─┘└└─┘└─┘┴└─ ┴
     // Compile the update statement into a native query.
     var compiledUpdateQuery;
     try {
-      compiledUpdateQuery = compileStatement(options.statement);
+      compiledUpdateQuery = compileStatement(updateStatement);
     } catch (e) {
       // If the statement could not be compiled, return an error.
       return cb(e);

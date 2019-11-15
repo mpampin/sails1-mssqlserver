@@ -26,15 +26,14 @@ module.exports = function runQuery(options, cb) {
   if (!_.has(options, 'nativeQuery')) {
     throw new Error('Invalid option used in options argument. Missing or invalid nativeQuery.');
   }
-
-
+console.log(options);
   //  ╦═╗╦ ╦╔╗╔  ┌┐┌┌─┐┌┬┐┬┬  ┬┌─┐  ┌─┐ ┬ ┬┌─┐┬─┐┬ ┬
   //  ╠╦╝║ ║║║║  │││├─┤ │ │└┐┌┘├┤   │─┼┐│ │├┤ ├┬┘└┬┘
   //  ╩╚═╚═╝╝╚╝  ┘└┘┴ ┴ ┴ ┴ └┘ └─┘  └─┘└└─┘└─┘┴└─ ┴
   mssql.sendNativeQuery({
     connection: options.connection,
     nativeQuery: options.nativeQuery,
-    valuesToEscape: options.valuesToEscape,
+    valuesToEscape: _.mapKeys(options.valuesToEscape, (_,k) => `p${k}`), // TODO: This should be in query compiler, not here
     meta: options.meta
   })
   .switch({
@@ -107,17 +106,22 @@ module.exports = function runQuery(options, cb) {
         });
       }
 
-
       //  ╔═╗╔═╗╦═╗╔═╗╔═╗  ┌─┐ ┬ ┬┌─┐┬─┐┬ ┬  ┬─┐┌─┐┌─┐┬ ┬┬ ┌┬┐┌─┐
       //  ╠═╝╠═╣╠╦╝╚═╗║╣   │─┼┐│ │├┤ ├┬┘└┬┘  ├┬┘├┤ └─┐│ ││  │ └─┐
       //  ╩  ╩ ╩╩╚═╚═╝╚═╝  └─┘└└─┘└─┘┴└─ ┴   ┴└─└─┘└─┘└─┘┴─┘┴ └─┘
       // If there was a query type given, parse the results.
       var queryResults = report.result;
+
       if (options.queryType) {
         try {
+          // FIXME: Apparently, machinepack-mssql uses recordset for some queryTypes and rows for count, avg and sum
+          var nativeQueryResult = {
+            ...queryResults,
+            rows: queryResults.recordset
+          }
           queryResults = mssql.parseNativeQueryResult({
             queryType: options.queryType,
-            nativeQueryResult: report.result
+            nativeQueryResult: nativeQueryResult
           }).execSync();
         } catch (e) {
           return cb(e);

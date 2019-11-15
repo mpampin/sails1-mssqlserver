@@ -76,7 +76,7 @@ module.exports = function insertRecord(options, cb) {
     runQuery({
       connection: options.connection,
       nativeQuery: compiledFetchQuery.nativeQuery,
-      valuesToEscape: _.mapKeys(compiledQuery.valuesToEscape, (_,k) => `p${k}`),
+      valuesToEscape: compiledQuery.valuesToEscape,
       meta: compiledFetchQuery.meta,
       disconnectOnError: false,
       queryType: 'select'
@@ -113,7 +113,7 @@ module.exports = function insertRecord(options, cb) {
     runQuery({
       connection: options.connection,
       nativeQuery: compiledUpdateQuery.nativeQuery,
-      valuesToEscape: _.mapKeys(compiledUpdateQuery.valuesToEscape, (_,k) => `p${k}`),
+      valuesToEscape: compiledUpdateQuery.valuesToEscape,
       meta: compiledUpdateQuery.meta,
       disconnectOnError: false,
       queryType: 'destroy'

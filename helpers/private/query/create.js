@@ -56,7 +56,7 @@ module.exports = function createEach(options, cb) {
   var insertOptions = {
     connection: options.connection,
     nativeQuery: compiledQuery.nativeQuery,
-    valuesToEscape: _.mapKeys(compiledQuery.valuesToEscape, (_,k) => `p${k}`),
+    valuesToEscape: compiledQuery.valuesToEscape,
     meta: compiledQuery.meta,
     disconnectOnError: false,
     queryType: 'insert'
@@ -88,12 +88,10 @@ module.exports = function createEach(options, cb) {
       from: options.statement.into,
       where: {}
     };
-    console.log(report);
 
     // Build up the WHERE clause for the statement to get the newly inserted
     // records.
-    fetchStatement.where[options.primaryKey] = report.result.inserted;
-console.log("fetch statement", fetchStatement)
+    //fetchStatement.where[options.primaryKey] = report.result.inserted;
 
     //  ╔═╗╔═╗╔╦╗╔═╗╦╦  ╔═╗  ┌─┐ ┬ ┬┌─┐┬─┐┬ ┬
     //  ║  ║ ║║║║╠═╝║║  ║╣   │─┼┐│ │├┤ ├┬┘└┬┘
@@ -107,15 +105,16 @@ console.log("fetch statement", fetchStatement)
       return cb(err);
     }
 
-console.log("compiled query", compiledQuery);
+    var nativeQuery = `${compiledQuery.nativeQuery} WHERE [${options.primaryKey}] = @@Identity`
+
     //  ╦═╗╦ ╦╔╗╔  ┌─┐ ┬ ┬┌─┐┬─┐┬ ┬
     //  ╠╦╝║ ║║║║  │─┼┐│ │├┤ ├┬┘└┬┘
     //  ╩╚═╚═╝╝╚╝  └─┘└└─┘└─┘┴└─ ┴
     // Run the fetch query.
     runQuery({
       connection: options.connection,
-      nativeQuery: compiledQuery.nativeQuery,
-      valuesToEscape: _.mapKeys(compiledQuery.valuesToEscape, (_,k) => `p${k}`),
+      nativeQuery: nativeQuery,
+      valuesToEscape: compiledQuery.valuesToEscape,
       meta: compiledQuery.meta,
       disconnectOnError: false,
       queryType: 'select'

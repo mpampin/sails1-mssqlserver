@@ -131,7 +131,7 @@ module.exports = require('machine').build({
       Helpers.query.runQuery({
         connection: connection,
         nativeQuery: compiledQuery.nativeQuery,
-        valuesToEscape: _.mapKeys(compiledQuery.valuesToEscape, (_,k) => `p${k}`),
+        valuesToEscape: compiledQuery.valuesToEscape,
         meta: compiledQuery.meta,
         queryType: queryType,
         disconnectOnError: leased ? false : true
