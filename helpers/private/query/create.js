@@ -47,7 +47,7 @@ module.exports = function createEach(options, cb) {
     // If the statement could not be compiled, return an error.
     return cb(e);
   }
-
+  
   //  ╦═╗╦ ╦╔╗╔  ┌─┐ ┬ ┬┌─┐┬─┐┬ ┬
   //  ╠╦╝║ ║║║║  │─┼┐│ │├┤ ├┬┘└┬┘
   //  ╩╚═╚═╝╝╚╝  └─┘└└─┘└─┘┴└─ ┴
@@ -56,7 +56,7 @@ module.exports = function createEach(options, cb) {
   var insertOptions = {
     connection: options.connection,
     nativeQuery: compiledQuery.nativeQuery,
-    valuesToEscape: compiledQuery.valuesToEscape,
+    valuesToEscape: _.mapKeys(compiledQuery.valuesToEscape, (_,k) => `p${k}`),
     meta: compiledQuery.meta,
     disconnectOnError: false,
     queryType: 'insert'
@@ -88,11 +88,12 @@ module.exports = function createEach(options, cb) {
       from: options.statement.into,
       where: {}
     };
+    console.log(report);
 
     // Build up the WHERE clause for the statement to get the newly inserted
     // records.
     fetchStatement.where[options.primaryKey] = report.result.inserted;
-
+console.log("fetch statement", fetchStatement)
 
     //  ╔═╗╔═╗╔╦╗╔═╗╦╦  ╔═╗  ┌─┐ ┬ ┬┌─┐┬─┐┬ ┬
     //  ║  ║ ║║║║╠═╝║║  ║╣   │─┼┐│ │├┤ ├┬┘└┬┘
@@ -106,7 +107,7 @@ module.exports = function createEach(options, cb) {
       return cb(err);
     }
 
-
+console.log("compiled query", compiledQuery);
     //  ╦═╗╦ ╦╔╗╔  ┌─┐ ┬ ┬┌─┐┬─┐┬ ┬
     //  ╠╦╝║ ║║║║  │─┼┐│ │├┤ ├┬┘└┬┘
     //  ╩╚═╚═╝╝╚╝  └─┘└└─┘└─┘┴└─ ┴
@@ -114,7 +115,7 @@ module.exports = function createEach(options, cb) {
     runQuery({
       connection: options.connection,
       nativeQuery: compiledQuery.nativeQuery,
-      valuesToEscape: compiledQuery.valuesToEscape,
+      valuesToEscape: _.mapKeys(compiledQuery.valuesToEscape, (_,k) => `p${k}`),
       meta: compiledQuery.meta,
       disconnectOnError: false,
       queryType: 'select'

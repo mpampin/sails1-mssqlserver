@@ -103,7 +103,6 @@ module.exports = require('machine').build({
       return exits.error(e);
     }
 
-
     // Compile the original Waterline Query
     var compiledQuery;
     try {
@@ -132,7 +131,7 @@ module.exports = require('machine').build({
       Helpers.query.runQuery({
         connection: connection,
         nativeQuery: compiledQuery.nativeQuery,
-        valuesToEscape: compiledQuery.valuesToEscape,
+        valuesToEscape: _.mapKeys(compiledQuery.valuesToEscape, (_,k) => `p${k}`),
         meta: compiledQuery.meta,
         queryType: queryType,
         disconnectOnError: leased ? false : true

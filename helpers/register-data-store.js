@@ -141,7 +141,6 @@ module.exports = require('machine').build({
         && inputs.config.options.encrypt) {
           url += "?encrypt=true"
         }
-
       inputs.config.url = url;
     }
 
