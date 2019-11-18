@@ -68,10 +68,7 @@ module.exports = require('machine').build({
   fn: function update(inputs, exits) {
     // Dependencies
     var _ = require('@sailshq/lodash');
-    var WLUtils = require('waterline-utils');
     var Helpers = require('./private');
-    var Converter = WLUtils.query.converter;
-
 
     // Store the Query input for easier access
     var query = inputs.query;
@@ -112,18 +109,9 @@ module.exports = require('machine').build({
       return exits.error(e);
     }
 
-
-    //  ╔═╗╔═╗╔╗╔╦  ╦╔═╗╦═╗╔╦╗  ┌┬┐┌─┐  ┌─┐┌┬┐┌─┐┌┬┐┌─┐┌┬┐┌─┐┌┐┌┌┬┐
-    //  ║  ║ ║║║║╚╗╔╝║╣ ╠╦╝ ║    │ │ │  └─┐ │ ├─┤ │ ├┤ │││├┤ │││ │
-    //  ╚═╝╚═╝╝╚╝ ╚╝ ╚═╝╩╚═ ╩    ┴ └─┘  └─┘ ┴ ┴ ┴ ┴ └─┘┴ ┴└─┘┘└┘ ┴
-    // Convert the Waterline criteria into a Waterline Query Statement. This
-    // turns it into something that is declarative and can be easily used to
-    // build a SQL query.
-    // See: https://github.com/treelinehq/waterline-query-docs for more info
-    // on Waterline Query Statements.
     var statement;
     try {
-      statement = Converter({
+      statement = Helpers.query.converter({
         model: query.using,
         method: 'update',
         criteria: query.criteria,

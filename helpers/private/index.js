@@ -13,6 +13,7 @@ module.exports = {
     create: require('./query/create'),
     createEach: require('./query/create-each'),
     compileStatement: require('./query/compile-statement'),
+    converter: require('./query/converter'),
     destroy: require('./query/destroy'),
     initializeQueryCache: require('./query/initialize-query-cache'),
     processEachRecord: require('./query/process-each-record'),

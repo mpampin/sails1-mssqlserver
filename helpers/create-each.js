@@ -75,7 +75,6 @@ module.exports = require('machine').build({
   fn: function create(inputs, exits) {
     // Dependencies
     var _ = require('@sailshq/lodash');
-    var utils = require('waterline-utils');
     var Helpers = require('./private');
 
     // Store the Query input for easier access
@@ -128,7 +127,7 @@ module.exports = require('machine').build({
     // on Waterline Query Statements.
     var statement;
     try {
-      statement = utils.query.converter({
+      statement = Helpers.query.converter({
         model: query.using,
         method: 'createEach',
         values: query.newRecords
@@ -136,7 +135,6 @@ module.exports = require('machine').build({
     } catch (e) {
       return exits.error(e);
     }
-    console.log("create statement:", statement);
 
     //  ╔╦╗╔═╗╔╦╗╔═╗╦═╗╔╦╗╦╔╗╔╔═╗  ┬ ┬┬ ┬┬┌─┐┬ ┬  ┬  ┬┌─┐┬  ┬ ┬┌─┐┌─┐
     //   ║║║╣  ║ ║╣ ╠╦╝║║║║║║║║╣   │││├─┤││  ├─┤  └┐┌┘├─┤│  │ │├┤ └─┐

@@ -62,7 +62,6 @@ module.exports = require('machine').build({
   fn: function sum(inputs, exits) {
     // Dependencies
     var _ = require('@sailshq/lodash');
-    var Converter = require('waterline-utils').query.converter;
     var Helpers = require('./private');
 
 
@@ -92,7 +91,7 @@ module.exports = require('machine').build({
     // on Waterline Query Statements.
     var statement;
     try {
-      statement = Converter({
+      statement = Helpers.query.converter({
         model: query.using,
         method: 'sum',
         criteria: query.criteria,

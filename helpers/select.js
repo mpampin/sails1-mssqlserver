@@ -63,8 +63,6 @@ module.exports = require('machine').build({
   fn: function select(inputs, exits) {
     // Dependencies
     var _ = require('@sailshq/lodash');
-    var WLUtils = require('waterline-utils');
-    var Converter = WLUtils.query.converter;
     var Helpers = require('./private');
 
 
@@ -83,18 +81,9 @@ module.exports = require('machine').build({
     // Set a flag if a leased connection from outside the adapter was used or not.
     var leased = _.has(query.meta, 'leasedConnection');
 
-
-    //  ╔═╗╔═╗╔╗╔╦  ╦╔═╗╦═╗╔╦╗  ┌┬┐┌─┐  ┌─┐┌┬┐┌─┐┌┬┐┌─┐┌┬┐┌─┐┌┐┌┌┬┐
-    //  ║  ║ ║║║║╚╗╔╝║╣ ╠╦╝ ║    │ │ │  └─┐ │ ├─┤ │ ├┤ │││├┤ │││ │
-    //  ╚═╝╚═╝╝╚╝ ╚╝ ╚═╝╩╚═ ╩    ┴ └─┘  └─┘ ┴ ┴ ┴ ┴ └─┘┴ ┴└─┘┘└┘ ┴
-    // Convert the Waterline criteria into a Waterline Query Statement. This
-    // turns it into something that is declarative and can be easily used to
-    // build a SQL query.
-    // See: https://github.com/treelinehq/waterline-query-docs for more info
-    // on Waterline Query Statements.
     var statement;
     try {
-      statement = Converter({
+      statement = Helpers.query.converter({
         model: query.using,
         method: 'find',
         criteria: query.criteria

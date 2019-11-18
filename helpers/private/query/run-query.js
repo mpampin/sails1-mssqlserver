@@ -26,7 +26,7 @@ module.exports = function runQuery(options, cb) {
   if (!_.has(options, 'nativeQuery')) {
     throw new Error('Invalid option used in options argument. Missing or invalid nativeQuery.');
   }
-console.log(options);
+  
   //  ╦═╗╦ ╦╔╗╔  ┌┐┌┌─┐┌┬┐┬┬  ┬┌─┐  ┌─┐ ┬ ┬┌─┐┬─┐┬ ┬
   //  ╠╦╝║ ║║║║  │││├─┤ │ │└┐┌┘├┤   │─┼┐│ │├┤ ├┬┘└┬┘
   //  ╩╚═╚═╝╝╚╝  ┘└┘┴ ┴ ┴ ┴ └┘ └─┘  └─┘└└─┘└─┘┴└─ ┴
