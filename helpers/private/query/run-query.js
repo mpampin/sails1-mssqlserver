@@ -62,7 +62,7 @@ module.exports = function runQuery(options, cb) {
           return cb(e);
         }
 
-        releaseConnection(options.connection, function releaseConnectionCb() {
+        releaseConnection(options.connection, options.leased, function releaseConnectionCb() {
           return cb(e);
         });
         return;
@@ -85,7 +85,7 @@ module.exports = function runQuery(options, cb) {
 
         return cb(parsedError);
       }
-
+      
       releaseConnection(options.connection, false, function releaseConnectionCb() {
         if (catchAllError) {
           return cb(report.error);
