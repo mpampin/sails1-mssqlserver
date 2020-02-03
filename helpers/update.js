@@ -162,35 +162,31 @@ module.exports = require('machine').build({
       },
 
       function updateRecordCb(err, updatedRecords) {
-        // Always release the connection unless a leased connection from outside
-        // the adapter was used.
-        Helpers.connection.releaseConnection(connection, leased, function cb() {
-          // If there was an error return it.
-          if (err) {
-            if (err.footprint && err.footprint.identity === 'notUnique') {
-              return exits.notUnique(err);
-            }
-
-            return exits.error(err);
+        // If there was an error return it.
+        if (err) {
+          if (err.footprint && err.footprint.identity === 'notUnique') {
+            return exits.notUnique(err);
           }
 
-          if (fetchRecords) {
-            // Process each record to normalize output
-            try {
-              Helpers.query.processEachRecord({
-                records: updatedRecords,
-                identity: model.identity,
-                orm: fauxOrm
-              });
-            } catch (e) {
-              return exits.error(e);
-            }
+          return exits.error(err);
+        }
 
-            return exits.success({ records: updatedRecords });
+        if (fetchRecords) {
+          // Process each record to normalize output
+          try {
+            Helpers.query.processEachRecord({
+              records: updatedRecords,
+              identity: model.identity,
+              orm: fauxOrm
+            });
+          } catch (e) {
+            return exits.error(e);
           }
 
-          return exits.success();
-        }); // </ releaseConnection >
+          return exits.success({ records: updatedRecords });
+        }
+
+        return exits.success();
       }); // </ runQuery >
     }); // </ spawnConnection >
   }

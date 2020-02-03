@@ -142,35 +142,31 @@ module.exports = require('machine').build({
       },
 
       function destroyRecordCb(err, destroyedRecords) {
-        // Always release the connection unless a leased connection from outside
-        // the adapter was used.
-        Helpers.connection.releaseConnection(connection, leased, function cb() {
           // If there was an error return it.
-          if (err) {
-            return exits.error(err);
+        if (err) {
+          return exits.error(err);
+        }
+
+        if (fetchRecords) {
+          var orm = {
+            collections: inputs.models
+          };
+
+          // Process each record to normalize output
+          try {
+            Helpers.query.processEachRecord({
+              records: destroyedRecords,
+              identity: model.identity,
+              orm: orm
+            });
+          } catch (e) {
+            return exits.error(e);
           }
 
-          if (fetchRecords) {
-            var orm = {
-              collections: inputs.models
-            };
+          return exits.success({ records: destroyedRecords });
+        }
 
-            // Process each record to normalize output
-            try {
-              Helpers.query.processEachRecord({
-                records: destroyedRecords,
-                identity: model.identity,
-                orm: orm
-              });
-            } catch (e) {
-              return exits.error(e);
-            }
-
-            return exits.success({ records: destroyedRecords });
-          }
-
-          return exits.success();
-        }); // </ releaseConnection >
+        return exits.success();
       }); // </ runQuery >
     }); // </ spawnConnection >
   }

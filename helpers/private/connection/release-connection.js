@@ -23,7 +23,6 @@ module.exports = function releaseConnection(connection, leased, cb) {
       return cb();
     });
   }
-
   mssql.releaseConnection({
     connection: connection
   }).switch({

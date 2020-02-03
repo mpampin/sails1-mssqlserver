@@ -9,7 +9,6 @@
 
 var _ = require('@sailshq/lodash');
 var mssql = require('machinepack-mssql');
-var releaseConnection = require('../connection/release-connection');
 
 module.exports = function runQuery(options, cb) {
   //  ╦  ╦╔═╗╦  ╦╔╦╗╔═╗╔╦╗╔═╗  ┌─┐┌─┐┌┬┐┬┌─┐┌┐┌┌─┐
@@ -44,9 +43,6 @@ module.exports = function runQuery(options, cb) {
         return cb(err);
       }
 
-      releaseConnection(options.connection, options.leased, function releaseConnectionCb(err) {
-        return cb(err);
-      });
     },
     // If the query failed, try and parse it into a normalized format and
     // release the connection if needed.
@@ -62,9 +58,6 @@ module.exports = function runQuery(options, cb) {
           return cb(e);
         }
 
-        releaseConnection(options.connection, options.leased, function releaseConnectionCb() {
-          return cb(e);
-        });
         return;
       }
 
@@ -86,13 +79,11 @@ module.exports = function runQuery(options, cb) {
         return cb(parsedError);
       }
       
-      releaseConnection(options.connection, false, function releaseConnectionCb() {
-        if (catchAllError) {
-          return cb(report.error);
-        }
+      if (catchAllError) {
+        return cb(report.error);
+      }
 
-        return cb(parsedError);
-      });
+      return cb(parsedError);
     },
     success: function success(report) {
       // If a custom primary key was used and the record has an `insert` query

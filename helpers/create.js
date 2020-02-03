@@ -166,36 +166,33 @@ module.exports = require('machine').build({
       },
 
       function createRecordCb(err, insertedRecords) {
-        // Release the connection if needed.
-        Helpers.connection.releaseConnection(connection, leased, function releaseCb() {
-          // If there was an error return it.
-          if (err) {
-            if (err.footprint && err.footprint.identity === 'notUnique') {
-              return exits.notUnique(err);
-            }
-
-            return exits.error(err);
+        // If there was an error return it.
+        if (err) {
+          if (err.footprint && err.footprint.identity === 'notUnique') {
+            return exits.notUnique(err);
           }
 
-          if (fetchRecords) {
-            // Process each record to normalize output
-            try {
-              Helpers.query.processEachRecord({
-                records: insertedRecords,
-                identity: model.identity,
-                orm: fauxOrm
-              });
-            } catch (e) {
-              return exits.error(e);
-            }
+          return exits.error(err);
+        }
 
-            // Only return the first record (there should only ever be one)
-            var insertedRecord = _.first(insertedRecords);
-            return exits.success({ record: insertedRecord });
+        if (fetchRecords) {
+          // Process each record to normalize output
+          try {
+            Helpers.query.processEachRecord({
+              records: insertedRecords,
+              identity: model.identity,
+              orm: fauxOrm
+            });
+          } catch (e) {
+            return exits.error(e);
           }
 
-          return exits.success();
-        }); // </ .releaseConnection(); >
+          // Only return the first record (there should only ever be one)
+          var insertedRecord = _.first(insertedRecords);
+          return exits.success({ record: insertedRecord });
+        }
+
+        return exits.success();
       }); // </ .insertRecord(); >
     }); // </ .spawnOrLeaseConnection(); >
   }

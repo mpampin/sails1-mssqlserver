@@ -133,27 +133,23 @@ module.exports = require('machine').build({
           return exits.error(err);
         }
 
-        // Always release the connection unless a leased connection from outside
-        // the adapter was used.
-        Helpers.connection.releaseConnection(connection, leased, function releaseConnectionCb() {
-          var selectRecords = report.result;
-          var orm = {
-            collections: inputs.models
-          };
+        var selectRecords = report.result;
+        var orm = {
+          collections: inputs.models
+        };
 
-          // Process each record to normalize output
-          try {
-            Helpers.query.processEachRecord({
-              records: selectRecords,
-              identity: model.identity,
-              orm: orm
-            });
-          } catch (e) {
-            return exits.error(e);
-          }
+        // Process each record to normalize output
+        try {
+          Helpers.query.processEachRecord({
+            records: selectRecords,
+            identity: model.identity,
+            orm: orm
+          });
+        } catch (e) {
+          return exits.error(e);
+        }
 
-          return exits.success({ records: selectRecords });
-        }); // </ releaseConnection >
+        return exits.success({ records: selectRecords });
       }); // </ runQuery >
     }); // </ spawnConnection >
   }

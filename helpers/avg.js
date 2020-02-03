@@ -127,17 +127,13 @@ module.exports = require('machine').build({
       },
 
       function runQueryCb(err, report) {
-        // The runQuery helper will automatically release the connection on error
-        // if needed.
+        
         if (err) {
           return exits.error(err);
         }
 
-        // Always release the connection unless a leased connection from outside
-        // the adapter was used.
-        Helpers.connection.releaseConnection(connection, leased, function releaseConnectionCb() {
-          return exits.success(report.result);
-        }); // </ releaseConnection >
+        return exits.success(report.result);
+
       }); // </ runQuery >
     }); // </ spawnConnection >
   }

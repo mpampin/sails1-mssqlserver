@@ -166,10 +166,7 @@ module.exports = require('machine').build({
             });
           });
 
-          Helpers.connection.releaseConnection(connection, leased, function cb() {
-            // Return the model schema
-            return exits.success({ schema: schema });
-          }); // </ releaseConnection >
+          return exits.success({ schema: schema });
         }); // </ runAutoIncrementQuery >
       }); // </ runDescribeQuery >
     }); // </ spawnConnection >
