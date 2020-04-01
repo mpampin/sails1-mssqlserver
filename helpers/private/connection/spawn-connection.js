@@ -14,7 +14,7 @@
 //
 // Instantiate a new connection from the connection manager.
 
-var mssql = require('machinepack-mssql');
+var mssql = require('@mpampin/machinepack-mssql');
 
 module.exports = function spawnConnection(datastore, cb) {
   // Validate datastore
