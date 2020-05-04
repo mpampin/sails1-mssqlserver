@@ -14,7 +14,7 @@
 //
 // Transform a Waterline Query Statement into a SQL query.
 
-var mssql = require('@mpampin/machinepack-mssql');
+var mssql = require('machinepack-mssql');
 
 module.exports = function compileStatement(statement, meta) {
   var report = mssql.compileStatement({

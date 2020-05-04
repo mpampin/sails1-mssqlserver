@@ -8,7 +8,7 @@
 // Send a Native Query to the datastore and gracefully handle errors.
 
 var _ = require('@sailshq/lodash');
-var mssql = require('@mpampin/machinepack-mssql');
+var mssql = require('machinepack-mssql');
 
 module.exports = function runQuery(options, cb) {
   //  ╦  ╦╔═╗╦  ╦╔╦╗╔═╗╔╦╗╔═╗  ┌─┐┌─┐┌┬┐┬┌─┐┌┐┌┌─┐
@@ -105,7 +105,7 @@ module.exports = function runQuery(options, cb) {
 
       if (options.queryType) {
         try {
-          // FIXME: Apparently, @mpampin/machinepack-mssql uses recordset for some queryTypes and rows for count, avg and sum
+          // FIXME: Apparently, machinepack-mssql uses recordset for some queryTypes and rows for count, avg and sum
           var nativeQueryResult = {
             ...queryResults,
             rows: queryResults.recordset

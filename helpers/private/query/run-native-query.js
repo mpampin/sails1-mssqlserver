@@ -15,7 +15,7 @@
 // Run a native SQL query on an open connection and return the raw results.
 
 var _ = require('@sailshq/lodash');
-var mssql = require('@mpampin/machinepack-mssql');
+var mssql = require('machinepack-mssql');
 
 module.exports = function runNativeQuery(connection, query, valuesToEscape, meta, cb) {
   mssql.sendNativeQuery({
