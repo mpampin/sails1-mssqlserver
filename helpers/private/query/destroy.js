@@ -76,7 +76,7 @@ module.exports = function insertRecord(options, cb) {
     runQuery({
       connection: options.connection,
       nativeQuery: compiledFetchQuery.nativeQuery,
-      valuesToEscape: compiledQuery.valuesToEscape,
+      valuesToEscape: compiledFetchQuery.valuesToEscape,
       meta: compiledFetchQuery.meta,
       disconnectOnError: false,
       queryType: 'select'
