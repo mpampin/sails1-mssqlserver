@@ -14,7 +14,7 @@
 //
 // Create a new connection manager to use.
 
-var mssql = require('machinepack-mssql');
+var mssql = require('@mpampin/machinepack-mssql');
 
 module.exports = function createManager(url, config) {
 
